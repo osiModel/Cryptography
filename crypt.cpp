@@ -1,6 +1,7 @@
 #include "crypt.hpp"
-Crypt::Crypt(const std::string & data): m_data(data){ std::cout<<"Data: "<<m_data<<std::endl;}
-void Crypt::encrypt(){
+
+// for now
+void cry::CrKey::encrypt(){
     int key{};
     char c = 'a';
     std::cout<<"key: ";
@@ -16,7 +17,7 @@ void Crypt::encrypt(){
     fin.close();
     fout.close();
 }
-void Crypt::decrypt(){
+void cry::CrKey::decrypt(){
     int key{};
     char c = 'a';
     std::cout<<"key: ";
