@@ -2,8 +2,6 @@
 #define CRYPT_HPP
 
 #include <string>
-#include <iostream>
-#include <fstream>
 
 enum MODE{
     FILE,
@@ -19,29 +17,18 @@ namespace cry{
         virtual ~Crypt() = default;
     };
 
-    class SHA256 : public Crypt{
-
-    }; // todo
-
-    class CrKey : public Crypt{
+    class SymmetricKey : public Crypt{
     public:
-        CrKey() = default;
-        CrKey(MODE m);
-        CrKey(const std::string & s); // to work with string    
-        CrKey(std::fstream & is); // to work with file
-
-        void ChangeMode(MODE mode);
-        void Open(std::fstream & fs);
-        void Close(std::fstream & fs);
+        SymmetricKey() = default;
+        void SetKey(const std::string &);
+        void SetString(const std::string &);
 
         void encrypt();
         void decrypt();
 
-        ~CrKey()=default;
     private:
-        MODE m_mode = FILE; // by default
         std::string data;
-        int32_t key{};
+        std::string key;
     };
 }
 

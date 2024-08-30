@@ -1,7 +1,11 @@
 #include "crypt.hpp"
+#include <iostream>
+
+
 
 // for now
-void cry::CrKey::encrypt(){
+/*
+void cry::AES::encrypt(){
     int key{};
     char c = 'a';
     std::cout<<"key: ";
@@ -17,7 +21,7 @@ void cry::CrKey::encrypt(){
     fin.close();
     fout.close();
 }
-void cry::CrKey::decrypt(){
+void cry::AES::decrypt(){
     int key{};
     char c = 'a';
     std::cout<<"key: ";
@@ -33,3 +37,4 @@ void cry::CrKey::decrypt(){
     fin.close();
     fout.close();
 }
+*/
