@@ -1,40 +1,57 @@
 #include "crypt.hpp"
-#include <iostream>
 
-
-
-// for now
-/*
-void cry::AES::encrypt(){
-    int key{};
-    char c = 'a';
-    std::cout<<"key: ";
-    std::cin>>key;
-    std::fstream fin,fout;
-    fin.open("file.txt",std::fstream::in);
-    fout.open("encrypt.txt",std::fstream::out);
-    while(fin>>std::noskipws>>c){
-        int temp = c+key;
-
-        fout<<char(temp);
+namespace cry{
+    void SymmetricKey::Encrypt(MODE mode){
+        switch(mode){
+            case FILE:
+                CheckForFile();
+                break;
+            case STRING:
+                CheckForString();
+                break;
+        }
     }
-    fin.close();
-    fout.close();
-}
-void cry::AES::decrypt(){
-    int key{};
-    char c = 'a';
-    std::cout<<"key: ";
-    std::cin>>key;
-    std::fstream fin,fout;
-    fin.open("encrypt.txt",std::fstream::in);
-    fout.open("decrypt.txt",std::fstream::out);
-    while(fin>>std::noskipws>>c){
-        int temp = c-key;
 
-        fout<<char(temp);
+    void SymmetricKey::Decrypt(MODE mode){
+        switch(mode){
+            case FILE:
+                CheckForFile();
+            case STRING:
+                CheckForString();
+        }
     }
-    fin.close();
-    fout.close();
+
+    std::string SymmetricKey::GetString() const {
+        return m_data;
+    }
+
+    std::string SymmetricKey::GetKey() const {
+        return m_key;
+    }
+
+    std::string SymmetricKey::GetFile() const {
+        return m_file;
+    }
+
+    std::string SymmetricKey::GetFileKey() const {
+        return m_fileKey;
+    }
+
+    void SymmetricKey::SetString(const std::string& data) {
+        m_data = data;
+    }
+
+    void SymmetricKey::SetKey(const std::string& key){
+        m_key = key;
+    }
+
+    void SymmetricKey::SetStream(const std::string& file){
+        m_file = file;
+    }
+
+    void SymmetricKey::SetStreamKey(const std::string& fileKey){
+        m_fileKey = fileKey;
+    }
+
 }
-*/
+
