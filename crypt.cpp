@@ -1,24 +1,74 @@
 #include "crypt.hpp"
-
+#include <iostream>
+#include <algorithm>
 namespace cry{
-    void SymmetricKey::Encrypt(MODE mode){
+    SymmetricKey::SymmetricKey(const std::string& data, const std::string& key,MODE mode = MODE::STRING){
         switch(mode){
-            case FILE:
-                CheckForFile();
+            case MODE::STRING:
+                m_data = data;
+                m_key = key;
                 break;
-            case STRING:
-                CheckForString();
+            case MODE::FILE:
+                m_file = data;
+                m_fileKey = key;
                 break;
         }
     }
 
-    void SymmetricKey::Decrypt(MODE mode){
-        switch(mode){
-            case FILE:
-                CheckForFile();
-            case STRING:
-                CheckForString();
+    void SymmetricKey::EncryptString(){
+        std::string result = m_data;
+
+        for(size_t i = 0;i<m_data.size();++i){
+            for(size_t j = 0;j<m_key.size();++j){
+                result[i] = m_data[i] ^ m_key[j];
+            }
         }
+
+        std::reverse(result.begin(),result.end());
+
+        m_data = result;
+        std::cout<<"\nString was encrypted!\n";
+    }
+
+    bool SymmetricKey::CheckForString() const {
+        return !m_data.empty() && !m_key.empty(); 
+    }
+
+    bool SymmetricKey::CheckForFile() const {
+        return !m_fileKey.empty() && !m_file.empty();
+    }
+
+    bool SymmetricKey::Encrypt(MODE mode) {
+        switch(mode){
+            case MODE::FILE:
+                if(CheckForFile()){
+                    //EncryptFile();
+                }else{
+                    std::cout<<"Filename with key or data is empty.\n";
+                    return 1;
+                }
+                break;
+            case MODE::STRING:
+                if(CheckForString()){
+                    EncryptString();
+                }else{
+                    std::cout<<"String or key is empty.\n";
+                    return 1;
+                }
+                break;
+        }
+        return 0;
+    }
+    bool SymmetricKey::Decrypt(MODE mode) {
+        switch(mode){
+            case MODE::FILE:
+                CheckForFile();
+                break;
+            case MODE::STRING:
+                CheckForString();
+                break;
+        }
+        return 0;
     }
 
     std::string SymmetricKey::GetString() const {
