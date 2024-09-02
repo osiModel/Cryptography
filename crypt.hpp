@@ -21,7 +21,7 @@ namespace cry{
     class SymmetricKey : public Crypt{
     public:
         SymmetricKey() = default;
-        SymmetricKey(const std::string&,const std::string&,MODE);
+        SymmetricKey(const std::string&,const std::string&, MODE = MODE::STRING);
         
         void SetString(const std::string&);
         void SetKey(const std::string&);
@@ -37,6 +37,7 @@ namespace cry{
         bool Decrypt(MODE) override;
 
         ~SymmetricKey() = default;
+
     private:
         std::string m_file;
         std::string m_fileKey;
@@ -44,10 +45,12 @@ namespace cry{
         std::string m_key;
 
         void EncryptString();
-        void EncryptFile();
+        void EncryptFile(); // todo
+        void DecryptString();
+        void DecryptFile(); // todo
 
-        std::string Stoh(const std::string&); //todo
-        std::string Htos(const std::string&); //todo
+        std::string ToHex(const std::string&,bool = false);
+        std::string ToString(const std::string&,bool = false);
 
         bool CheckForString() const;
         bool CheckForFile() const;

@@ -1,8 +1,15 @@
 #include "crypt.hpp"
-#include <iostream>
-#include <algorithm>
+#include <iostream> //cout
+#include <iomanip> // hex uppercase nouppercase
+#include <exception> // ...
+#include <algorithm> // reverse
+#include <sstream> // ostream
+#include <stdint.h> // uint32_t uint8_t
+
 namespace cry{
-    SymmetricKey::SymmetricKey(const std::string& data, const std::string& key,MODE mode = MODE::STRING){
+    using ssize = std::string::size_type;
+
+    SymmetricKey::SymmetricKey(const std::string& data, const std::string& key, MODE mode){
         switch(mode){
             case MODE::STRING:
                 m_data = data;
@@ -15,19 +22,58 @@ namespace cry{
         }
     }
 
+    std::string SymmetricKey::ToHex(const std::string& normStr, bool upperCase){
+        std::ostringstream ss;
+
+        for(ssize i = 0;i<normStr.size();++i){
+            ss<<std::hex<<std::setfill('0')<<std::setw(2)<<(upperCase ? std::uppercase : std::nouppercase) << (int)normStr[i];
+        }
+        return ss.str();
+    }
+
+    std::string SymmetricKey::ToString(const std::string& hexValue, bool upperCase){
+        std::string result;
+
+        for(ssize i = 0;i<hexValue.size()/2;++i){
+            std::stringstream ss;
+            ss<<std::hex<<hexValue.substr(i*2,2);
+            uint32_t c{};
+            ss>>c;
+
+            result.push_back(static_cast<uint8_t>(c));
+        }
+
+        return result;
+    }
+
     void SymmetricKey::EncryptString(){
         std::string result = m_data;
 
-        for(size_t i = 0;i<m_data.size();++i){
-            for(size_t j = 0;j<m_key.size();++j){
+        for(ssize i = 0;i<m_data.size();++i){
+            for(ssize j = 0;j<m_key.size();++j){
                 result[i] = m_data[i] ^ m_key[j];
             }
         }
 
         std::reverse(result.begin(),result.end());
 
-        m_data = result;
+        m_data = ToHex(result);
         std::cout<<"\nString was encrypted!\n";
+    }
+
+    void SymmetricKey::DecryptString(){
+        std::string result = ToString(m_data);
+
+        std::reverse(result.begin(),result.end());
+        
+        m_data = result;
+
+        for(ssize i = 0;i<m_data.size();++i){
+            for(ssize j = 0;j<m_key.size();++j){
+                result[i] = m_data[i] ^ m_key[j];
+            }
+        }
+        std::cout<<"\nString was decrypted!\n";
     }
 
     bool SymmetricKey::CheckForString() const {
@@ -42,33 +88,43 @@ namespace cry{
         switch(mode){
             case MODE::FILE:
                 if(CheckForFile()){
-                    //EncryptFile();
+                    // todo
                 }else{
-                    std::cout<<"Filename with key or data is empty.\n";
-                    return 1;
+                    std::cerr<<"ERROR: EMPTY FILE NAME OR KEY.\n";
+                    return false;
                 }
                 break;
             case MODE::STRING:
                 if(CheckForString()){
                     EncryptString();
                 }else{
-                    std::cout<<"String or key is empty.\n";
-                    return 1;
+                    std::cerr<<"ERROR: EMPTY STRING OR KEY.\n";
+                    return false;
                 }
                 break;
         }
-        return 0;
+        return true;
     }
     bool SymmetricKey::Decrypt(MODE mode) {
         switch(mode){
             case MODE::FILE:
-                CheckForFile();
+                if(CheckForFile()){
+                    // todo
+                }else{
+                    std::cerr<<"ERROR: EMPTY FILE NAME OR KEY.\n";
+                    return false;
+                }
                 break;
             case MODE::STRING:
-                CheckForString();
+                if(CheckForString()){
+                    DecryptString();
+                }else{
+                    std::cerr<<"ERROR: EMPTY STRING OR KEY.\n";
+                    return false;
+                }
                 break;
         }
-        return 0;
+        return true;
     }
 
     std::string SymmetricKey::GetString() const {
