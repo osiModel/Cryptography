@@ -56,24 +56,23 @@ namespace cry{
         }
 
         std::reverse(result.begin(),result.end());
-
         m_data = ToHex(result);
-        std::cout<<"\nString was encrypted!\n";
+        std::cout<<"String was encrypted!\n";
     }
 
     void SymmetricKey::DecryptString(){
         std::string result = ToString(m_data);
-
         std::reverse(result.begin(),result.end());
-        
         m_data = result;
-
+        
         for(ssize i = 0;i<m_data.size();++i){
             for(ssize j = 0;j<m_key.size();++j){
                 result[i] = m_data[i] ^ m_key[j];
             }
         }
-        std::cout<<"\nString was decrypted!\n";
+
+        m_data = result;
+        std::cout<<"String was decrypted!\n";
     }
 
     bool SymmetricKey::CheckForString() const {
