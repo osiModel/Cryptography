@@ -2,7 +2,6 @@
 #define CRYPT_HPP
 
 #include <string>
-#include <initializer_list> // will be
 
 enum class MODE{
     FILE,
@@ -10,15 +9,7 @@ enum class MODE{
 };
 
 namespace cry{
-    class Crypt{ 
-    public:
-        Crypt() = default;
-        virtual bool Encrypt(MODE) = 0;
-        virtual bool Decrypt(MODE) = 0;
-        virtual ~Crypt() = default;
-    };
-
-    class SymmetricKey : public Crypt{
+    class SymmetricKey{
     public:
         SymmetricKey() = default;
         SymmetricKey(const std::string&,const std::string&, MODE = MODE::STRING);
@@ -33,8 +24,8 @@ namespace cry{
         std::string GetFile() const;
         std::string GetFileKey() const;
 
-        bool Encrypt(MODE) override;
-        bool Decrypt(MODE) override;
+        bool Encrypt(MODE);
+        bool Decrypt(MODE);
 
         ~SymmetricKey() = default;
 
@@ -45,9 +36,9 @@ namespace cry{
         std::string m_key;
 
         void EncryptString();
-        void EncryptFile(); // todo
         void DecryptString();
-        void DecryptFile(); // todo
+        void EncryptFile() const; // todo
+        void DecryptFile() const; // todo
 
         std::string ToHex(const std::string&,bool = false);
         std::string ToString(const std::string&,bool = false);

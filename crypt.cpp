@@ -1,9 +1,10 @@
 #include "crypt.hpp"
-#include <iostream> //cout
-#include <iomanip> // hex uppercase nouppercase
+#include <iostream> //cerr cout
+#include <iomanip> // hex uppercase nouppercase setw setfill
+#include <fstream>
 #include <exception> // ...
 #include <algorithm> // reverse
-#include <sstream> // ostream
+#include <sstream> // ostream stringstream
 #include <stdint.h> // uint32_t uint8_t
 
 namespace cry{
@@ -44,6 +45,25 @@ namespace cry{
         }
 
         return result;
+    }
+
+    void SymmetricKey::EncryptFile() const{
+        using std::fstream;
+        fstream is(m_file,fstream::in | 
+                        fstream::out  |
+                        fstream::binary);
+        std::string line;
+
+        if(!is)
+            std::cerr<<"Can't find or read file.\n";
+
+        while(getline(is,line)){
+            
+        }
+    }
+
+    void SymmetricKey::DecryptFile() const{
+
     }
 
     void SymmetricKey::EncryptString(){
