@@ -7,6 +7,26 @@
 #include <sstream> // ostream stringstream
 #include <stdint.h> // uint32_t uint8_t
 
+/*
+REFRENCE:
+
+
+ifstream is("s.txt",fstream::binary);
+    string s = "asd";
+    vector<string> v;
+    while(getline(is,s)){
+        if(s.size() > 0)
+            s[s.size()-1] = 'O';
+        v.push_back(s);
+    }
+    is.close();
+    ofstream os("s.txt");
+    for(const auto& i : v){
+        os << i << std::endl;
+    }
+
+*/
+
 namespace cry{
     using ssize = std::string::size_type;
 
@@ -52,11 +72,11 @@ namespace cry{
         fstream is(m_file,fstream::in | 
                         fstream::out  |
                         fstream::binary);
-        std::string line;
 
         if(!is)
             std::cerr<<"Can't find or read file.\n";
-
+        std::fstream result;
+        std::string line;
         while(getline(is,line)){
             
         }
