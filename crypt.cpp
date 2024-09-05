@@ -1,31 +1,13 @@
 #include "crypt.hpp"
 #include <iostream> //cerr cout
 #include <iomanip> // hex uppercase nouppercase setw setfill
-#include <fstream>
+#include <fstream> // ofstream ifstream 
 #include <exception> // ...
 #include <algorithm> // reverse
 #include <sstream> // ostream stringstream
 #include <stdint.h> // uint32_t uint8_t
+#include <vector>
 
-/*
-REFRENCE:
-
-
-ifstream is("s.txt",fstream::binary);
-    string s = "asd";
-    vector<string> v;
-    while(getline(is,s)){
-        if(s.size() > 0)
-            s[s.size()-1] = 'O';
-        v.push_back(s);
-    }
-    is.close();
-    ofstream os("s.txt");
-    for(const auto& i : v){
-        os << i << std::endl;
-    }
-
-*/
 
 namespace cry{
     using ssize = std::string::size_type;
@@ -43,7 +25,25 @@ namespace cry{
         }
     }
 
-    std::string SymmetricKey::ToHex(const std::string& normStr, bool upperCase){
+    void SymmetricKey::EncryptFile() const{
+        std::ifstream is(m_file);
+        std::vector<std::string> vec;
+        if(!is)
+            std::cerr<<"Can't find or read file.\n";
+        std::string line;
+        while(getline(is,line)){
+            vec.push_back(ToHex(line));
+        }
+
+        is.close();
+        std::ofstream os(m_file);
+    }
+
+    void SymmetricKey::DecryptFile() const{
+
+    }
+
+    std::string ToHex(const std::string& normStr, bool upperCase){
         std::ostringstream ss;
 
         for(ssize i = 0;i<normStr.size();++i){
@@ -52,7 +52,7 @@ namespace cry{
         return ss.str();
     }
 
-    std::string SymmetricKey::ToString(const std::string& hexValue, bool upperCase){
+    std::string ToString(const std::string& hexValue, bool upperCase){
         std::string result;
 
         for(ssize i = 0;i<hexValue.size()/2;++i){
@@ -67,52 +67,34 @@ namespace cry{
         return result;
     }
 
-    void SymmetricKey::EncryptFile() const{
-        using std::fstream;
-        fstream is(m_file,fstream::in | 
-                        fstream::out  |
-                        fstream::binary);
 
-        if(!is)
-            std::cerr<<"Can't find or read file.\n";
-        std::fstream result;
-        std::string line;
-        while(getline(is,line)){
-            
-        }
-    }
+    std::string SymmetricKey::EncryptString(const std::string& data,const std::string& key){
+        std::string result = data;
 
-    void SymmetricKey::DecryptFile() const{
-
-    }
-
-    void SymmetricKey::EncryptString(){
-        std::string result = m_data;
-
-        for(ssize i = 0;i<m_data.size();++i){
-            for(ssize j = 0;j<m_key.size();++j){
-                result[i] = m_data[i] ^ m_key[j];
+        for(ssize i = 0;i<data.size();++i){
+            for(ssize j = 0;j<key.size();++j){
+                result[i] = data[i] ^ key[j];
             }
         }
 
         std::reverse(result.begin(),result.end());
-        m_data = ToHex(result);
         std::cout<<"String was encrypted!\n";
+        return ToHex(result);
     }
 
-    void SymmetricKey::DecryptString(){
-        std::string result = ToString(m_data);
+    std::string SymmetricKey::DecryptString(std::string data,const std::string& key){
+        std::string result = ToString(data);
         std::reverse(result.begin(),result.end());
-        m_data = result;
+        data = result;
         
         for(ssize i = 0;i<m_data.size();++i){
-            for(ssize j = 0;j<m_key.size();++j){
-                result[i] = m_data[i] ^ m_key[j];
+            for(ssize j = 0;j<key.size();++j){
+                result[i] = m_data[i] ^ key[j];
             }
         }
 
-        m_data = result;
         std::cout<<"String was decrypted!\n";
+        return result;
     }
 
     bool SymmetricKey::CheckForString() const {
@@ -135,7 +117,7 @@ namespace cry{
                 break;
             case MODE::STRING:
                 if(CheckForString()){
-                    EncryptString();
+                    m_data = EncryptString(m_data,m_key);
                 }else{
                     std::cerr<<"ERROR: EMPTY STRING OR KEY.\n";
                     return false;
@@ -156,7 +138,7 @@ namespace cry{
                 break;
             case MODE::STRING:
                 if(CheckForString()){
-                    DecryptString();
+                    m_data = DecryptString(m_data,m_key);
                 }else{
                     std::cerr<<"ERROR: EMPTY STRING OR KEY.\n";
                     return false;

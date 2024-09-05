@@ -8,7 +8,12 @@ enum class MODE{
     STRING
 };
 
+
 namespace cry{
+
+    std::string ToHex(const std::string&,bool = false);
+    std::string ToString(const std::string&,bool = false);
+
     class SymmetricKey{
     public:
         SymmetricKey() = default;
@@ -35,17 +40,16 @@ namespace cry{
         std::string m_data;
         std::string m_key;
 
-        void EncryptString();
-        void DecryptString();
+        std::string EncryptString(const std::string&,const std::string&);
+        std::string DecryptString(std::string,const std::string&);
         void EncryptFile() const; // todo
         void DecryptFile() const; // todo
 
-        std::string ToHex(const std::string&,bool = false);
-        std::string ToString(const std::string&,bool = false);
 
         bool CheckForString() const;
         bool CheckForFile() const;
     };
 }
+
 
 #endif // CRYPT_HPP
