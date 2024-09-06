@@ -3,16 +3,12 @@
 
 #include <string>
 
-enum class MODE{
-    FILE,
-    STRING
-};
-
-
 namespace cry{
 
-    std::string ToHex(const std::string&,bool = false);
-    std::string ToString(const std::string&,bool = false);
+    enum class MODE{
+        FILE,
+        STRING
+    };
 
     class SymmetricKey{
     public:
@@ -40,11 +36,15 @@ namespace cry{
         std::string m_data;
         std::string m_key;
 
-        std::string EncryptString(const std::string&,const std::string&);
-        std::string DecryptString(std::string,const std::string&);
-        void EncryptFile() const; // todo
-        void DecryptFile() const; // todo
+        void EncryptFile() const;
+        void DecryptFile() const;
 
+        std::string EncryptString(const std::string&,const std::string&) const;
+        std::string DecryptString(std::string,const std::string&) const;
+
+        std::string ToHex(const std::string&,bool = false) const;
+        std::string ToString(const std::string&,bool = false) const;
+        std::string FileToString(const std::string&) const;
 
         bool CheckForString() const;
         bool CheckForFile() const;
