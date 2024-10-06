@@ -1,2 +1,2 @@
 # Cryptography
-Symmetric key algorithm (will be more)
+Symmetric key algorithm library
